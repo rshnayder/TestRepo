@@ -12,11 +12,6 @@ public class Allurelogger {
                              requestDetails, StandardCharsets.UTF_8.name());
     }
 
-    /**
-     * Додає відповідь у звіт Allure.
-     *
-     * @param response Відповідь `Response` з API.
-     */
     public static void logResponse(Response response) {
         Allure.addAttachment("Response Payload", "application/json",
                              response.asString(), StandardCharsets.UTF_8.name());
