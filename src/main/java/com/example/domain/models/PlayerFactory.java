@@ -3,44 +3,60 @@ package com.example.domain.models;
 import java.util.Random;
 
 import com.example.domain.enums.Gender;
+import com.example.domain.enums.UserRole;
+import com.example.utils.Randomizer;
 
-import static com.example.domain.enums.Gender.MALE;
+import static com.example.domain.enums.Gender.*;
+import static com.example.domain.enums.UserRole.*;
 
 public class PlayerFactory {
 
-    private static final Random RANDOM = new Random();
-
-
     public static Player createDefaultPlayer() {
+        return createCustomPlayer(25, MALE, USER);
+    }
+
+    public static Player createNotExistingPlayer() {
         return Player.builder()
-                .age(25)
-                .gender(MALE.name()) // Стандартна стать
-                .login("user_" + System.currentTimeMillis()) // Динамічний логін
-                .password("password" + RANDOM.nextInt(9999)) // Генеруємо унікальний пароль
-                .role("user") // Роль за замовчуванням
-                .screenName("screen_" + System.currentTimeMillis()) // Динамічне ім'я екрана
+                .age(33)
+                .gender(MALE.toString())
+                .login(SUPERVISOR.getRole())
+                .id(9999999999L)
+                .password(Randomizer.randomPassword(16))
+                .role(SUPERVISOR.getRole())
+                .screenName("screen_" +  System.currentTimeMillis())
                 .build();
     }
 
 
-    public static Player createCustomPlayer(int age, Gender gender, String role) {
+
+    public static Player createCustomPlayer(int age, Gender gender, UserRole role) {
         return Player.builder()
                 .age(age)
                 .gender(gender.toString())
                 .login(role + "_" + System.currentTimeMillis())
-                .password("password" + RANDOM.nextInt(9999))
-                .role(role)
+                .password(Randomizer.randomPassword(16))
+                .role(role.getRole())
                 .screenName("screen_" + role + "_" + System.currentTimeMillis())
                 .build();
     }
 
+    public static Player createPlayerWithAgeRestriction() {
+        return createCustomPlayer(15, MALE, USER);
+    }
+
+    //Player.getGender() type can be refactored to String
+    public static Player createPlayerWithInvalidGender() {
+        return createCustomPlayer(60, INVALID_GENDER, USER);
+    }
+
+
     public static Player createAdminPlayer() {
         return Player.builder()
                 .age(30)
-                .gender("male")
+                .gender(FEMALE.toString())
                 .login("admin_" + System.currentTimeMillis())
                 .password("adminPass123")
-                .role("admin")
+                .role(ADMIN.getRole())
                 .screenName("AdminScreen_" + System.currentTimeMillis())
                 .build();
     }
@@ -49,10 +65,10 @@ public class PlayerFactory {
     public static Player createSupervisorPlayer() {
         return Player.builder()
                 .age(40)
-                .gender("female")
+                .gender(MALE.toString())
                 .login("supervisor_" + System.currentTimeMillis())
                 .password("superPass123")
-                .role("supervisor")
+                .role(SUPERVISOR.getRole())
                 .screenName("SupervisorScreen_" + System.currentTimeMillis())
                 .build();
     }

@@ -9,19 +9,8 @@ import org.apache.commons.lang3.StringUtils;
 
 public class Config {
 
-    private static final String CONFIG_FILE = "src/main/resources/properties/config.properties";
+    private static final String CONFIG_FILE = "properties/config.properties";
     private static final Properties properties = new Properties();
-    private static final String BASE_URL = getProperty("base.url");
-    private static final String THREAD_COUNT = getProperty("thread.count");
-
-
-    public static String getBaseUrl() {
-        return BASE_URL;
-    }
-
-    public static String getThreadCount() {
-        return THREAD_COUNT;
-    }
 
     public static String getProperty(String propertyKey) {
         String systemProperty = System.getProperty(propertyKey);

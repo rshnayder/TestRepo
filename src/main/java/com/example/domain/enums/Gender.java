@@ -5,5 +5,11 @@ import lombok.Getter;
 @Getter
 public enum Gender {
     MALE,
-    FEMALE;
+    FEMALE,
+    INVALID_GENDER;
+
+    @Override
+    public String toString() {
+        return name().toLowerCase();
+    }
 }

@@ -1,16 +1,26 @@
 package com.example.api.tests;
 
-import com.example.api.controllers.player.PlayersController;
+import com.example.assertions.ApiAssertions;
 import io.restassured.RestAssured;
-import org.testng.annotations.BeforeClass;
+import io.restassured.parsing.Parser;
+import org.testng.annotations.*;
 
 public abstract class BaseTest {
 
-    protected PlayersController playersController;
+    protected ApiAssertions assertions;
 
-    public BaseTest() {
-        this.playersController = new PlayersController();
+    @BeforeClass
+    protected void initialize() {
+        RestAssured.defaultParser = Parser.JSON;
     }
 
+    @BeforeMethod
+    protected void prepareAssertions() {
+        this.assertions = new ApiAssertions();
+    }
 
+    @AfterClass
+    protected void afterAll() {
+       RestAssured.reset();
+    }
 }

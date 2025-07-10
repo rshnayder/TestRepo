@@ -2,9 +2,10 @@ package com.example.api.controllers.player;
 
 import java.util.Map;
 
-import com.example.api.base.BaseController;
+import com.example.api.BaseController;
 import com.example.domain.enums.UserRole;
 import com.example.domain.models.Player;
+import com.example.mapper.PlayersMapper;
 import com.players.api.dto.*;
 import io.restassured.response.Response;
 
@@ -23,47 +24,54 @@ public class PlayersController extends BaseController<PlayersController> {
         super("/player");
     }
 
-    public Response createPlayer(UserRole editor, Player player) {
-        return withEditor(editor)
+    public static Response createPlayer(UserRole editor, Player player) {
+        return new PlayersController()
+                .withPathParams(Map.of("editor", editor.getRole()))
                 .withQueryParams(player.toMap())
                 .get(GET_CREATE_PLAYER);
     }
 
+    public static Response deletePlayer(UserRole editor, Player player) {
+        var requestDto = PlayersMapper.map(player, PlayerDeleteRequestDto.class);
 
-    public Response deletePlayer(UserRole editor, PlayerDeleteRequestDto requestDto) {
-        return withEditor(editor)
+        return new PlayersController()
+                .withEditor(editor.getRole())
                 .withBody(requestDto)
                 .delete(DELETE_PLAYER);
     }
 
+    public static Response getPlayerDetails(Player player) {
+        var requestDto = PlayersMapper.map(player, PlayerGetByPlayerIdRequestDto.class);
 
-    public Response getPlayerDetails(PlayerGetByPlayerIdRequestDto requestDto) {
-        return withBody(requestDto).post(POST_GET_PLAYER);
+        return new PlayersController()
+                .withBody(requestDto)
+                .post(POST_GET_PLAYER);
     }
 
 
-    public Response getPlayerDetails() {
-        return get(GET_ALL_PLAYERS);
+    public static Response getAllPlayersDetails() {
+        return new PlayersController().get(GET_ALL_PLAYERS);
     }
 
-    public Response updatePlayer(UserRole editor, long id, PlayerUpdateRequestDto requestDto) {
-        return withEditor(editor)
-                .withId(String.valueOf(id))
+    public static Response updatePlayer(String editor, Long id, Player player) {
+        var requestDto = PlayersMapper.map(player, PlayerUpdateRequestDto.class);
+
+        return new PlayersController().withEditor(editor)
+                .withIdToBeChanged(id.toString())
                 .withBody(requestDto)
                 .patch(PATCH_UPDATE_PLAYER);
-
     }
 
-    public PlayersController withEditor(UserRole editor) {
-        return withPathParams(Map.of(EDITOR_PARAM, editor.getRole()));
+    public PlayersController withEditor(String editor) {
+        return withPathParams(Map.of(EDITOR_PARAM, editor));
     }
 
-    public PlayersController withId(String id) {
+    public PlayersController withIdToBeChanged(String id) {
         return withPathParams(Map.of(ID_PARAM, id));
     }
 
     @Override
-    protected PlayersController getSelf() {
+    protected  PlayersController getSelf() {
         return this;
     }
 }
